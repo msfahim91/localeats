@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "422392390863",
+    "project_id": "localeats-12b4c",
+    "storage_bucket": "localeats-12b4c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422392390863:android:b9c187e5b37fa0221903ba",
+        "android_client_info": {
+          "package_name": "com.localeats.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1uD1GpZFoA89RZIxFUKIpl14wLMcHph4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422392390863:android:e166f900479a9dd61903ba",
+        "android_client_info": {
+          "package_name": "com.localeats.localeats"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1uD1GpZFoA89RZIxFUKIpl14wLMcHph4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
