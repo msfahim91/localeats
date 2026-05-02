@@ -30,18 +30,17 @@ jobs:
           sed -i 's/image_picker: .*/image_picker: ^1.0.4/' pubspec.yaml
           sed -i 's/google_maps_flutter: .*/google_maps_flutter: ^2.10.1/' pubspec.yaml
 
+      - name: Setup local.properties
+        run: |
+          echo "flutter.sdk=/opt/flutter" > localeats/android/local.properties
+          echo "sdk.dir=$ANDROID_SDK_ROOT" >> localeats/android/local.properties
+          echo "flutter.versionName=1.0.0" >> localeats/android/local.properties
+          echo "flutter.versionCode=1" >> localeats/android/local.properties
+
       - name: Get packages
         run: |
           cd localeats
           flutter pub get
-
-      - name: Show structure
-        run: |
-          ls localeats/android/
-
-      - name: Copy settings
-        run: |
-          ls localeats/android/settings.gradle.kts && echo "EXISTS" || echo "NOT FOUND"
 
       - name: Build APK
         run: |
