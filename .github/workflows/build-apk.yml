@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: localeats
     steps:
       - uses: actions/checkout@v4
 
@@ -24,20 +21,32 @@ jobs:
         run: |
           git clone https://github.com/flutter/flutter.git --depth 1 -b 3.24.3 /opt/flutter
           echo "/opt/flutter/bin" >> $GITHUB_PATH
-        working-directory: .
 
       - name: Fix packages
         run: |
+          cd localeats
           sed -i 's/flutter_lints: .*/flutter_lints: ^3.0.0/' pubspec.yaml
           sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.2/' pubspec.yaml
           sed -i 's/image_picker: .*/image_picker: ^1.0.4/' pubspec.yaml
           sed -i 's/google_maps_flutter: .*/google_maps_flutter: ^2.10.1/' pubspec.yaml
 
       - name: Get packages
-        run: flutter pub get
+        run: |
+          cd localeats
+          flutter pub get
+
+      - name: Show structure
+        run: |
+          ls localeats/android/
+
+      - name: Copy settings
+        run: |
+          ls localeats/android/settings.gradle.kts && echo "EXISTS" || echo "NOT FOUND"
 
       - name: Build APK
-        run: flutter build apk --release --no-tree-shake-icons
+        run: |
+          cd localeats
+          flutter build apk --release --no-tree-shake-icons
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
