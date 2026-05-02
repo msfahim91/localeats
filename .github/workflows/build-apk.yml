@@ -17,21 +17,22 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.5'
-          channel: 'stable'
-          cache: true
+      - name: Install Flutter
+        run: |
+          git clone https://github.com/flutter/flutter.git --depth 1 -b 3.24.3 /opt/flutter
+          echo "/opt/flutter/bin" >> $GITHUB_PATH
 
-      - name: Fix pubspec
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Fix packages
         run: |
           cd localeats
           sed -i 's/flutter_lints: .*/flutter_lints: ^3.0.0/' pubspec.yaml
           sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.2/' pubspec.yaml
           sed -i 's/image_picker: .*/image_picker: ^1.0.4/' pubspec.yaml
 
-      - name: Install dependencies
+      - name: Get packages
         run: |
           cd localeats
           flutter pub get
