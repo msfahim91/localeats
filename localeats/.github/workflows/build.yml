@@ -14,6 +14,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.3'
+          cache: false
       - name: Get dependencies
         run: |
           cd localeats
@@ -21,7 +22,7 @@ jobs:
       - name: Build APK
         run: |
           cd localeats
-          flutter build apk --release
+          flutter build apk --release --no-tree-shake-icons -v 2>&1 | tail -50
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
