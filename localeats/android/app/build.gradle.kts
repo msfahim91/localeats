@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
     id("kotlin-android")
+    id("dev.flutter.flutter-gradle-plugin")
 }
 android {
     namespace = "com.localeats.localeats"
@@ -12,11 +13,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     defaultConfig {
         applicationId = "com.localeats.localeats"
-        minSdk = 21
+        minSdk = flutter.minSdkVersion
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
@@ -26,4 +27,7 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+}
+flutter {
+    source = "../.."
 }
