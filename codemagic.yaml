@@ -1,20 +1,11 @@
 workflows:
   android-release:
-    name: Android Release Build
+    name: Android Release
     max_build_duration: 60
     environment:
       flutter: 3.19.6
       java: 17
     scripts:
-      - name: Fix package versions
-        script: |
-          cd localeats
-          sed -i 's/flutter_lints: .*/flutter_lints: ^3.0.0/' pubspec.yaml
-          sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.2/' pubspec.yaml
-          sed -i 's/image_picker: .*/image_picker: ^1.0.7/' pubspec.yaml
-          sed -i 's/google_maps_flutter: .*/google_maps_flutter: ^2.5.3/' pubspec.yaml
-          sed -i 's/flutter_facebook_auth: .*/flutter_facebook_auth: ^6.0.1/' pubspec.yaml
-          sed -i 's/geolocator: .*/geolocator: ^10.1.0/' pubspec.yaml
       - name: Get packages
         script: |
           cd localeats
