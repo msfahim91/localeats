@@ -15,20 +15,21 @@ jobs:
         with:
           flutter-version: '3.22.3'
           cache: false
-      - name: Flutter doctor
-        run: flutter doctor -v
       - name: Get dependencies
         run: |
           cd localeats
           flutter pub get
-      - name: Show gradle files
+      - name: Patch flutter gradle plugin
         run: |
-          cat localeats/android/settings.gradle.kts
-          cat localeats/android/gradle/wrapper/gradle-wrapper.properties
+          FLUTTER_PATH=$(flutter --version --machine | python3 -c "import sys,json; print(json.load(sys.stdin)['flutterRoot'])")
+          PLUGIN_FILE="$FLUTTER_PATH/packages/flutter_tools/gradle/src/main/groovy/flutter.groovy"
+          if [ -f "$PLUGIN_FILE" ]; then
+            sed -i 's/project.tasks.register("generateLockfiles"/project.tasks.findByName("generateLockfiles") ?: project.tasks.register("generateLockfiles"/' "$PLUGIN_FILE"
+          fi
       - name: Build APK
         run: |
           cd localeats
-          flutter build apk --release
+          flutter build apk --release --no-tree-shake-icons
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
