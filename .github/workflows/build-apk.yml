@@ -38,14 +38,19 @@ jobs:
           sed -i 's/firebase_storage: .*/firebase_storage: ^11.7.0/' pubspec.yaml
           sed -i 's/google_sign_in: .*/google_sign_in: ^6.2.1/' pubspec.yaml
 
-      - name: Recreate android folder
+      - name: Recreate android folder fresh
         run: |
           cd localeats
-          cp google-services.json /tmp/google-services.json 2>/dev/null || true
-          cp lib/firebase_options.dart /tmp/firebase_options.dart 2>/dev/null || true
+          cp android/app/google-services.json /tmp/google-services.json
           rm -rf android
-          flutter create --platforms android .
-          cp /tmp/google-services.json android/app/google-services.json 2>/dev/null || true
+          flutter create --platforms android --org com.localeats .
+          cp /tmp/google-services.json android/app/google-services.json
+          echo "apply plugin: 'com.google.gms.google-services'" >> android/app/build.gradle
+
+      - name: Setup local.properties
+        run: |
+          echo "flutter.sdk=/opt/flutter" > localeats/android/local.properties
+          echo "sdk.dir=$ANDROID_SDK_ROOT" >> localeats/android/local.properties
 
       - name: Get packages
         run: |
