@@ -12,26 +12,29 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17'
-      - name: Install Flutter
+          java-version: '11'
+      - name: Install Flutter 3.10.6
         run: |
-          git clone https://github.com/flutter/flutter.git --depth 1 -b 3.22.0 /opt/flutter
+          git clone https://github.com/flutter/flutter.git --depth 1 -b 3.10.6 /opt/flutter
           echo "/opt/flutter/bin" >> $GITHUB_PATH
           /opt/flutter/bin/flutter precache --android
       - name: Fix pubspec
         run: |
           cd localeats
-          sed -i 's/flutter_lints: .*/flutter_lints: ^3.0.0/' pubspec.yaml
-          sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.2/' pubspec.yaml
-          sed -i 's/image_picker: .*/image_picker: ^1.0.7/' pubspec.yaml
-          sed -i 's/google_maps_flutter: .*/google_maps_flutter: ^2.5.3/' pubspec.yaml
+          sed -i 's/sdk: .*/sdk: ^3.0.0/' pubspec.yaml
+          sed -i 's/flutter_lints: .*/flutter_lints: ^2.0.0/' pubspec.yaml
+          sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.0/' pubspec.yaml
+          sed -i 's/image_picker: .*/image_picker: ^1.0.4/' pubspec.yaml
+          sed -i 's/google_maps_flutter: .*/google_maps_flutter: ^2.3.0/' pubspec.yaml
           sed -i 's/flutter_facebook_auth: .*/flutter_facebook_auth: ^6.0.1/' pubspec.yaml
           sed -i 's/geolocator: .*/geolocator: ^10.1.0/' pubspec.yaml
-          sed -i 's/firebase_core: .*/firebase_core: ^2.27.0/' pubspec.yaml
-          sed -i 's/firebase_auth: .*/firebase_auth: ^4.19.0/' pubspec.yaml
-          sed -i 's/cloud_firestore: .*/cloud_firestore: ^4.17.0/' pubspec.yaml
-          sed -i 's/firebase_storage: .*/firebase_storage: ^11.7.0/' pubspec.yaml
-          sed -i 's/google_sign_in: .*/google_sign_in: ^6.2.1/' pubspec.yaml
+          sed -i 's/firebase_core: .*/firebase_core: ^2.15.0/' pubspec.yaml
+          sed -i 's/firebase_auth: .*/firebase_auth: ^4.9.0/' pubspec.yaml
+          sed -i 's/cloud_firestore: .*/cloud_firestore: ^4.9.0/' pubspec.yaml
+          sed -i 's/firebase_storage: .*/firebase_storage: ^11.2.0/' pubspec.yaml
+          sed -i 's/google_sign_in: .*/google_sign_in: ^6.1.5/' pubspec.yaml
+          sed -i 's/cached_network_image: .*/cached_network_image: ^3.2.3/' pubspec.yaml
+          sed -i 's/provider: .*/provider: ^6.0.5/' pubspec.yaml
       - name: Fresh android setup
         run: |
           cd localeats
@@ -39,13 +42,10 @@ jobs:
           rm -rf android
           flutter create --platforms android --org com.localeats .
           cp /tmp/gservices.json android/app/google-services.json
-          sed -i "s/ext.kotlin_version = .*/ext.kotlin_version = '1.9.0'/" android/build.gradle
-          sed -i "/apply plugin: 'com.android.application'/a apply plugin: 'com.google.gms.google-services'" android/app/build.gradle
+          sed -i "s/apply plugin: 'com.android.application'/apply plugin: 'com.android.application'\napply plugin: 'com.google.gms.google-services'/" android/app/build.gradle
           sed -i "/classpath 'com.android.tools.build/i\\        classpath 'com.google.gms:google-services:4.3.15'" android/build.gradle
           echo "flutter.sdk=/opt/flutter" > android/local.properties
           echo "sdk.dir=$ANDROID_SDK_ROOT" >> android/local.properties
-      - name: Clear cache
-        run: rm -rf ~/.gradle/caches
       - name: Get packages
         run: cd localeats && flutter pub get
       - name: Build APK
