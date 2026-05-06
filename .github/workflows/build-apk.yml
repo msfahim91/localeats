@@ -45,7 +45,8 @@ jobs:
           rm -rf android
           flutter create --platforms android --org com.localeats .
           cp /tmp/google-services.json android/app/google-services.json
-          echo "apply plugin: 'com.google.gms.google-services'" >> android/app/build.gradle
+          sed -i "s/id 'com.android.application'/id 'com.android.application'\n    id 'com.google.gms.google-services'/" android/app/build.gradle
+          sed -i "s/classpath 'com.android.tools.build:gradle/classpath 'com.google.gms:google-services:4.3.15'\n        classpath 'com.android.tools.build:gradle/" android/build.gradle
 
       - name: Setup local.properties
         run: |
