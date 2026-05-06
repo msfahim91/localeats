@@ -2,11 +2,13 @@ plugins {
     id("com.android.application")
     id("com.google.gms.google-services")
     id("kotlin-android")
+    id("dev.flutter.flutter-gradle-plugin")
 }
 
 android {
     namespace = "com.localeats.localeats"
     compileSdk = 34
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -33,8 +35,6 @@ android {
     }
 }
 
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22")
+flutter {
+    source = "../.."
 }
-
-apply(from = "${rootProject.projectDir}/../flutter/packages/flutter_tools/gradle/flutter.gradle")
