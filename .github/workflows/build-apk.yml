@@ -23,13 +23,6 @@ jobs:
           echo "/opt/flutter/bin" >> $GITHUB_PATH
           /opt/flutter/bin/flutter precache --android
 
-      - name: Setup local.properties
-        run: |
-          echo "flutter.sdk=/opt/flutter" > localeats/android/local.properties
-          echo "sdk.dir=$ANDROID_SDK_ROOT" >> localeats/android/local.properties
-          echo "flutter.versionName=1.0.0" >> localeats/android/local.properties
-          echo "flutter.versionCode=1" >> localeats/android/local.properties
-
       - name: Fix pubspec
         run: |
           cd localeats
@@ -44,6 +37,15 @@ jobs:
           sed -i 's/cloud_firestore: .*/cloud_firestore: ^4.17.0/' pubspec.yaml
           sed -i 's/firebase_storage: .*/firebase_storage: ^11.7.0/' pubspec.yaml
           sed -i 's/google_sign_in: .*/google_sign_in: ^6.2.1/' pubspec.yaml
+
+      - name: Recreate android folder
+        run: |
+          cd localeats
+          cp google-services.json /tmp/google-services.json 2>/dev/null || true
+          cp lib/firebase_options.dart /tmp/firebase_options.dart 2>/dev/null || true
+          rm -rf android
+          flutter create --platforms android .
+          cp /tmp/google-services.json android/app/google-services.json 2>/dev/null || true
 
       - name: Get packages
         run: |
