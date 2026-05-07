@@ -18,10 +18,10 @@ jobs:
           git clone https://github.com/flutter/flutter.git --depth 1 -b 3.10.6 /opt/flutter
           echo "/opt/flutter/bin" >> $GITHUB_PATH
           /opt/flutter/bin/flutter precache --android
-      - name: Fix pubspec
+     - name: Fix pubspec
         run: |
           cd localeats
-          sed -i 's/sdk: .*/sdk: ^3.0.0/' pubspec.yaml
+          sed -i 's/  sdk: .*/  sdk: ">=3.0.0 <4.0.0"/' pubspec.yaml
           sed -i 's/flutter_lints: .*/flutter_lints: ^2.0.0/' pubspec.yaml
           sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.0/' pubspec.yaml
           sed -i 's/image_picker: .*/image_picker: ^1.0.4/' pubspec.yaml
