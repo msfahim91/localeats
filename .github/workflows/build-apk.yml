@@ -3,6 +3,8 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,16 +14,17 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: zulu
-          java-version: '11'
-      - name: Install Flutter
-        run: |
-          git clone https://github.com/flutter/flutter.git --depth 1 -b 3.10.6 /opt/flutter
-          echo "/opt/flutter/bin" >> $GITHUB_PATH
-          /opt/flutter/bin/flutter precache --android
+          java-version: '17'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.6'
+          channel: stable
       - name: Fix pubspec
         run: |
           cd localeats
-          sed -i '/^  sdk:/c\  sdk: ">=3.0.0 <4.0.0"' pubspec.yaml          sed -i 's/flutter_lints: .*/flutter_lints: ^2.0.0/' pubspec.yaml
+          sed -i '/^  sdk:/c\  sdk: ">=3.0.0 <4.0.0"' pubspec.yaml
+          sed -i 's/flutter_lints: .*/flutter_lints: ^2.0.0/' pubspec.yaml
           sed -i 's/shared_preferences: .*/shared_preferences: ^2.2.0/' pubspec.yaml
           sed -i 's/image_picker: .*/image_picker: ^1.0.4/' pubspec.yaml
           sed -i 's/google_maps_flutter: .*/google_maps_flutter: ^2.3.0/' pubspec.yaml
@@ -43,7 +46,7 @@ jobs:
           cp /tmp/gservices.json android/app/google-services.json
           sed -i "s/apply plugin: 'com.android.application'/apply plugin: 'com.android.application'\napply plugin: 'com.google.gms.google-services'/" android/app/build.gradle
           sed -i "/classpath 'com.android.tools.build/i\\        classpath 'com.google.gms:google-services:4.3.15'" android/build.gradle
-          echo "flutter.sdk=/opt/flutter" > android/local.properties
+          echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
           echo "sdk.dir=$ANDROID_SDK_ROOT" >> android/local.properties
       - name: Get packages
         run: cd localeats && flutter pub get
