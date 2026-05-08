@@ -11,14 +11,14 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: zulu
           java-version: '11'
-      - name: Install Flutter 3.10.6
+      - name: Install Flutter
         run: |
           git clone https://github.com/flutter/flutter.git --depth 1 -b 3.10.6 /opt/flutter
           echo "/opt/flutter/bin" >> $GITHUB_PATH
           /opt/flutter/bin/flutter precache --android
-     - name: Fix pubspec
+      - name: Fix pubspec
         run: |
           cd localeats
           sed -i 's/  sdk: .*/  sdk: ">=3.0.0 <4.0.0"/' pubspec.yaml
