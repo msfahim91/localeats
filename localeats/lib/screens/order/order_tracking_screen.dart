@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../home/home_screen.dart';
+import 'rating_screen.dart';
 
 class OrderTrackingScreen extends StatelessWidget {
   final String orderId;
@@ -15,12 +16,12 @@ class OrderTrackingScreen extends StatelessWidget {
         builder: (_, snap) {
           final data = snap.data?.data() as Map<String, dynamic>? ?? {};
           final status = data['status'] ?? 'placed';
-          final steps = _getSteps(status);
+          final steps = _getSteps();
           final currentStep = _getCurrentStep(status);
           final eta = _getETA(status);
+          final rated = data['rated'] ?? false;
 
           return Column(children: [
-            // Header
             Container(padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(color: Color(0xFFFF7F50),
                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(28), bottomRight: Radius.circular(28))),
@@ -59,7 +60,7 @@ class OrderTrackingScreen extends StatelessWidget {
                 ]))),
               const SizedBox(height: 16),
 
-              // Status Steps
+              // Steps
               Container(padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16),
                   boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)]),
@@ -107,10 +108,9 @@ class OrderTrackingScreen extends StatelessWidget {
                     Text(data['paymentMethod'] ?? '', style: const TextStyle(fontWeight: FontWeight.w500)),
                   ]),
                 ])),
-              const SizedBox(height: 14),
 
-              // Rider
-              if (status == 'on_the_way' || status == 'delivered')
+              if (status == 'on_the_way' || status == 'delivered') ...[
+                const SizedBox(height: 14),
                 Container(padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(14),
                     boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8)]),
@@ -125,9 +125,19 @@ class OrderTrackingScreen extends StatelessWidget {
                     Container(width: 38, height: 38, decoration: const BoxDecoration(color: Color(0xFF2E8B57), shape: BoxShape.circle),
                       child: const Icon(Icons.phone, color: Colors.white, size: 18)),
                   ])),
+              ],
 
               if (status == 'delivered') ...[
                 const SizedBox(height: 14),
+                if (!rated) ElevatedButton.icon(
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => RatingScreen(
+                    orderId: orderId,
+                    vendorId: data['vendorId'] ?? '',
+                    vendorName: data['vendorName'] ?? ''))),
+                  icon: const Icon(Icons.star_outlined),
+                  label: const Text('Rate Your Order', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber, foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)))),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen())),
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2E8B57), foregroundColor: Colors.white, minimumSize: const Size(double.infinity, 50), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
@@ -140,7 +150,7 @@ class OrderTrackingScreen extends StatelessWidget {
     );
   }
 
-  List<Map<String, dynamic>> _getSteps(String status) => [
+  List<Map<String, dynamic>> _getSteps() => [
     {'title': 'Order Placed', 'sub': 'Waiting for vendor', 'icon': Icons.check_circle_outline},
     {'title': 'Being Prepared', 'sub': 'Vendor is cooking', 'icon': Icons.restaurant_outlined},
     {'title': 'On the Way', 'sub': 'Rider is coming', 'icon': Icons.delivery_dining_outlined},
@@ -162,7 +172,7 @@ class OrderTrackingScreen extends StatelessWidget {
       case 'placed': return 'Waiting for vendor to accept...';
       case 'preparing': return 'Being prepared — 15-20 min';
       case 'on_the_way': return 'On the way — arriving soon!';
-      case 'delivered': return '✅ Delivered!';
+      case 'delivered': return 'Delivered!';
       default: return 'Processing...';
     }
   }
